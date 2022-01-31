@@ -37,7 +37,6 @@ function get5dayForecast(city, key){
 // If it is a good response then parse it to json format with the .json()-method
 // If not, write a message to the console
 function responseFunction(response){
-    //console.log(response);
 
     if(response.status>=200 && response.status<300){
         return response.json();
@@ -97,7 +96,6 @@ function getDayOfWeek(date) {
 
 //remove old searchresult and errormessages before new search is executed
 function removeOldSearch(){
-    console.log('remove');
     const res_desc = document.querySelector('#current-description');
     const res_temperature = document.querySelector('#current-temp');
     const res_wind = document.querySelector('#current-wind');
@@ -105,8 +103,6 @@ function removeOldSearch(){
     const img_icon = document.querySelector('#current-weather div img');
     const forecast = document.querySelectorAll('#forecast-weather');
     const forecast_weekday = document.querySelectorAll('.weekday');
-    console.log(forecast[0].children);
-    console.log(forecast[0].children.length);
 
     res_desc.innerText = "";
     res_temperature.innerText = "";
