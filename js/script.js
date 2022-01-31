@@ -10,15 +10,6 @@ btn_search_weather.addEventListener('click', e => removeOldSearch()); //clear ol
 btn_search_weather.addEventListener('click', e => getCurrentWeater(inp_city.value, KEY));
 btn_search_weather.addEventListener('click', e => get5dayForecast(inp_city.value, KEY));
 
-//btn_forecast.addEventListener('click', e => removeOldSearch());
-//btn_forecast.addEventListener('click', e => get16dayForecast(inp_city.value, KEY)); //
-// btn_search.addEventListener('click', e => getImages(//get images
-//     inp_search_string.value,//add searchstring
-//     inp_img_size.value,//add size
-//     inp_nr_img.value)); //add number of objects
-//btn_current_weather.addEventListener('click', e => btn_current_weather.disabled = true);//disable the button during search so you cannot doublepress it
-//btn_forecast.addEventListener('click', e => btn_forecast.disabled = true);//disable the button during search so you cannot doublepress it
-
 
 // Embed the api call in a function and pass args text and size
 function getCurrentWeater(city, key){
@@ -33,7 +24,7 @@ function getCurrentWeater(city, key){
 
 function get5dayForecast(city, key){
   
-    const url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${city}&key=${key}`;
+    const url = `https://api.weatherbit.io/v2.0/forecast/daily?city=${city}&key=${key}&lang=sv`;
 
     fetch(url) //Send a request to the API
     .then(responseFunction) //When the promise is fulfilled, run the function responseFunction 
@@ -57,10 +48,9 @@ function responseFunction(response){
     }
 }
 
-
 //Put together the URL for the image and get the result in the response from the API
 function getWeather(data){
-    console.log(data);
+   console.log(data);
     const res_desc = document.querySelector('#current-description');
     const res_temperature = document.querySelector('#current-temp');
     const res_wind = document.querySelector('#current-wind');
@@ -78,50 +68,17 @@ function getWeather(data){
 }
 
 function getForecast(data){
-    console.log(data);
-
-    const description = document.querySelector('#current-description');
-    const temperature = document.querySelector('#current-temp');
-    const wind = document.querySelector('#current-wind');
-    const humidity = document.querySelector('#current-humidity');
-
-
-    const main = document.createElement('main'); 
-    const h2_city = document.createElement('h2'); 
-    const ul = document.createElement('ul');
-
-    h2_city.innerText = "Location: "+ data.city_name;
-
-    document.body.appendChild(main);
-    main.appendChild(h2_city);
-    main.appendChild(ul);
-
     
-    for (const iterator of data.data) {
-        console.log(iterator.temp);
-        console.log(iterator.datetime);
+    const forecast = document.querySelectorAll('#forecast-weather');
 
-        const li = document.createElement('li');
-        const icon = document.createElement('img');
-        icon.src = `https://www.weatherbit.io/static/img/icons/${iterator.weather.icon}.png`;
+    for (let i = 0; i < forecast[0].children.length; i++) {
 
-        li.innerHTML = 
-            iterator.datetime +
-            " " +
-            iterator.weather.description +
-            ", Temp: " + iterator.temp + "°C" +
-            ", Wind: " + iterator.wind_spd + "m/s " +
-            //icon;
-           `<img src='${icon.src}' width='35' alt='no img'> </img>`;
-
-        icon.addEventListener("error", imgError);
-        
-        ul.appendChild(li);
+        forecast[0].children[i].children[0].src = `https://www.weatherbit.io/static/img/icons/${data.data[i+1].weather.icon}.png`;
+        forecast[0].children[i].children[0].alt = "ikon kan inte laddas";
+        forecast[0].children[i].children[1].innerText = data.data[i+1].weather.description;
+        forecast[0].children[i].children[2].innerText = data.data[i+1].temp + " °C";
     }
-   
 }
-
-
 
 //remove old searchresult and errormessages before new search is executed
 function removeOldSearch(){
@@ -130,6 +87,7 @@ function removeOldSearch(){
     const res_wind = document.querySelector('#current-wind');
     const res_humidity = document.querySelector('#current-humidity');
     const img_icon = document.querySelector('#current-weather div img');
+    const forecast = document.querySelectorAll('#forecast-weather');
 
     res_desc.innerText = "";
     res_temperature.innerText = "";
@@ -138,6 +96,14 @@ function removeOldSearch(){
 
     img_icon.src = "";
     img_icon.alt = "";
+
+    for (let i = 0; i < forecast[0].children.length; i++) {
+
+        forecast[0].children[i].children[0].src = ``;
+        forecast[0].children[i].children[0].alt = "";
+        forecast[0].children[i].children[1].innerText = "";
+        forecast[0].children[i].children[2].innerText = "";
+    }
 
     displayErrorMsg(""); //reset error messages
 }
