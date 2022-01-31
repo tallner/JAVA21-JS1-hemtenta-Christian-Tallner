@@ -50,14 +50,14 @@ function responseFunction(response){
 
 //Put together the URL for the image and get the result in the response from the API
 function getWeather(data){
-   console.log(data);
+  
     const res_desc = document.querySelector('#current-description');
     const res_temperature = document.querySelector('#current-temp');
     const res_wind = document.querySelector('#current-wind');
     const res_humidity = document.querySelector('#current-humidity');
     const img_icon = document.querySelector('#current-weather div img');
 
-    res_desc.innerText = data.data[0].weather.description;
+    res_desc.innerText = 'Dagens väder: ' + data.data[0].weather.description;
     res_temperature.innerText = "Temperatur " + Math.round(data.data[0].temp) + " °C";
     res_wind.innerText = "Vindhastighet " + Math.round(data.data[0].wind_spd) + " m/s";
     res_humidity.innerText = "Luftfuktighet " + Math.round(data.data[0].rh) + " %";
@@ -68,26 +68,45 @@ function getWeather(data){
 }
 
 function getForecast(data){
-    
+    const forecastDiv = document.querySelectorAll('#forecast-weather > div');
     const forecast = document.querySelectorAll('#forecast-weather');
 
     for (let i = 0; i < forecast[0].children.length; i++) {
-
         forecast[0].children[i].children[0].src = `https://www.weatherbit.io/static/img/icons/${data.data[i+1].weather.icon}.png`;
         forecast[0].children[i].children[0].alt = "ikon kan inte laddas";
         forecast[0].children[i].children[1].innerText = data.data[i+1].weather.description;
-        forecast[0].children[i].children[2].innerText = data.data[i+1].temp + " °C";
+        forecast[0].children[i].children[2].innerText = Math.round(data.data[i+1].temp) + " °C";
+
+        //add weekday
+        const p = document.createElement('p');
+        p.className = 'weekday';
+        p.innerText = getDayOfWeek(data.data[i+1].datetime);
+        forecastDiv[i].insertBefore(p, forecastDiv[i].firstChild);
     }
+
+    
 }
+
+
+// Accepts a Date object or date string that is recognized by the Date.parse() method
+function getDayOfWeek(date) {
+    const dayOfWeek = new Date(date).getDay();    
+    return isNaN(dayOfWeek) ? null : 
+      ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'][dayOfWeek];
+  }
 
 //remove old searchresult and errormessages before new search is executed
 function removeOldSearch(){
+    console.log('remove');
     const res_desc = document.querySelector('#current-description');
     const res_temperature = document.querySelector('#current-temp');
     const res_wind = document.querySelector('#current-wind');
     const res_humidity = document.querySelector('#current-humidity');
     const img_icon = document.querySelector('#current-weather div img');
     const forecast = document.querySelectorAll('#forecast-weather');
+    const forecast_weekday = document.querySelectorAll('.weekday');
+    console.log(forecast[0].children);
+    console.log(forecast[0].children.length);
 
     res_desc.innerText = "";
     res_temperature.innerText = "";
@@ -97,6 +116,12 @@ function removeOldSearch(){
     img_icon.src = "";
     img_icon.alt = "";
 
+    //remove the added weekday
+    for (let i = 0; i < forecast_weekday.length; i++) {
+        forecast_weekday[i].remove();  
+    }
+
+    //clear forecast
     for (let i = 0; i < forecast[0].children.length; i++) {
 
         forecast[0].children[i].children[0].src = ``;
@@ -104,6 +129,8 @@ function removeOldSearch(){
         forecast[0].children[i].children[1].innerText = "";
         forecast[0].children[i].children[2].innerText = "";
     }
+
+    
 
     displayErrorMsg(""); //reset error messages
 }
