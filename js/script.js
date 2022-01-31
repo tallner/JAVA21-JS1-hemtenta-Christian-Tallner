@@ -8,7 +8,7 @@ const inp_city = document.querySelector('input');
 //starting point of the application is when clicking the searchbutton
 btn_search_weather.addEventListener('click', e => removeOldSearch()); //clear old search results
 btn_search_weather.addEventListener('click', e => getCurrentWeater(inp_city.value, KEY));
-//btn_search_weather.addEventListener('click', e => get5dayForecast(inp_city.value, KEY));
+btn_search_weather.addEventListener('click', e => get5dayForecast(inp_city.value, KEY));
 
 //btn_forecast.addEventListener('click', e => removeOldSearch());
 //btn_forecast.addEventListener('click', e => get16dayForecast(inp_city.value, KEY)); //
@@ -68,9 +68,9 @@ function getWeather(data){
     const img_icon = document.querySelector('#current-weather div img');
 
     res_desc.innerText = data.data[0].weather.description;
-    res_temperature.innerText = data.data[0].temp + " °C";
-    res_wind.innerText = data.data[0].wind_spd + " m/s";
-    res_humidity.innerText = data.data[0].rh + " %";
+    res_temperature.innerText = "Temperatur " + Math.round(data.data[0].temp) + " °C";
+    res_wind.innerText = "Vindhastighet " + Math.round(data.data[0].wind_spd) + " m/s";
+    res_humidity.innerText = "Luftfuktighet " + Math.round(data.data[0].rh) + " %";
 
     img_icon.src = `https://www.weatherbit.io/static/img/icons/${data.data[0].weather.icon}.png`;
     img_icon.alt = 'ikon kan inte laddas';
